@@ -1,3 +1,6 @@
+このサイトを参考にしたコードです。（参考というか丸パクリ）
+https://hashhub-research.com/articles/2022-05-12-try-make-your-blockchain-by-cosmossdk-2
+
 # loan
 **loan** is a blockchain built using Cosmos SDK and Tendermint and created with [Ignite CLI](https://ignite.com/cli).
 
