@@ -3,53 +3,46 @@ package keeper
 import (
 	"context"
 
-	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-	"github.com/cosmos/cosmos-sdk/types/query"
 	"github.com/username/loan/x/loan/types"
-	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/status"
 )
 
-func (k Keeper) LoanAll(c context.Context, req *types.QueryAllLoanRequest) (*types.QueryAllLoanResponse, error) {
-	if req == nil {
-		return nil, status.Error(codes.InvalidArgument, "invalid request")
+func (k msgServer) RequestLoan(goCtx context.Context, msg *types.MsgRequestLoan) (*types.MsgRequestLoanResponse, error) {
+	ctx := sdk.UnwrapSDKContext(goCtx)
+
+	// Create a new Loan with the following user input
+	var loan = types.Loan{
+		Amount:     msg.Amount,
+		Fee:        msg.Fee,
+		Collateral: msg.Collateral,
+		Deadline:   msg.Deadline,
+		State:      "requested",
+		Borrower:   msg.Creator,
 	}
 
-	var loans []types.Loan
-	ctx := sdk.UnwrapSDKContext(c)
+	// TODO: collateral has to be more than the amount (+fee?)
 
-	store := ctx.KVStore(k.storeKey)
-	loanStore := prefix.NewStore(store, types.KeyPrefix(types.LoanKey))
+	// moduleAcc := sdk.AccAddress(crypto.AddressHash([]byte(types.ModuleName)))
+	// Get the borrower address
+	borrower, _ := sdk.AccAddressFromBech32(msg.Creator)
 
-	pageRes, err := query.Paginate(loanStore, req.Pagination, func(key []byte, value []byte) error {
-		var loan types.Loan
-		if err := k.cdc.Unmarshal(value, &loan); err != nil {
-			return err
-		}
-
-		loans = append(loans, loan)
-		return nil
-	})
-
+	// Get the collateral as sdk.Coins
+	collateral, err := sdk.ParseCoinsNormalized(loan.Collateral)
 	if err != nil {
-		return nil, status.Error(codes.Internal, err.Error())
+		panic(err)
 	}
 
-	return &types.QueryAllLoanResponse{Loan: loans, Pagination: pageRes}, nil
-}
-
-func (k Keeper) Loan(c context.Context, req *types.QueryGetLoanRequest) (*types.QueryGetLoanResponse, error) {
-	if req == nil {
-		return nil, status.Error(codes.InvalidArgument, "invalid request")
+	// Use the module account as escrow account
+	sdkError := k.bankKeeper.SendCoinsFromAccountToModule(ctx, borrower, types.ModuleName, collateral)
+	if sdkError != nil {
+		return nil, sdkError
 	}
 
-	ctx := sdk.UnwrapSDKContext(c)
-	loan, found := k.GetLoan(ctx, req.Id)
-	if !found {
-		return nil, sdkerrors.ErrKeyNotFound
-	}
+	// Add the loan to the keeper
+	k.AppendLoan(
+		ctx,
+		loan,
+	)
 
-	return &types.QueryGetLoanResponse{Loan: loan}, nil
+	return &types.MsgRequestLoanResponse{}, nil
 }
