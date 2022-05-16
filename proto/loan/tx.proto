@@ -9,6 +9,7 @@ option go_package = "github.com/username/loan/x/loan/types";
 service Msg {
       rpc RequestLoan(MsgRequestLoan) returns (MsgRequestLoanResponse);
   rpc RepayLoan(MsgRepayLoan) returns (MsgRepayLoanResponse);
+  rpc ApproveLoan(MsgApproveLoan) returns (MsgApproveLoanResponse);
 // this line is used by starport scaffolding # proto/tx/rpc
 }
 
@@ -29,6 +30,14 @@ message MsgRepayLoan {
 }
 
 message MsgRepayLoanResponse {
+}
+
+message MsgApproveLoan {
+  string creator = 1;
+  uint64 id = 2;
+}
+
+message MsgApproveLoanResponse {
 }
 
 // this line is used by starport scaffolding # proto/tx/message
