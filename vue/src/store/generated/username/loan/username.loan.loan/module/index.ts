@@ -7,12 +7,16 @@ import { Api } from "./rest";
 import { MsgRequestLoan } from "./types/loan/tx";
 import { MsgApproveLoan } from "./types/loan/tx";
 import { MsgRepayLoan } from "./types/loan/tx";
+import { MsgCancelLoan } from "./types/loan/tx";
+import { MsgLiquidateLoan } from "./types/loan/tx";
 
 
 const types = [
   ["/username.loan.loan.MsgRequestLoan", MsgRequestLoan],
   ["/username.loan.loan.MsgApproveLoan", MsgApproveLoan],
   ["/username.loan.loan.MsgRepayLoan", MsgRepayLoan],
+  ["/username.loan.loan.MsgCancelLoan", MsgCancelLoan],
+  ["/username.loan.loan.MsgLiquidateLoan", MsgLiquidateLoan],
   
 ];
 export const MissingWalletError = new Error("wallet is required");
@@ -48,6 +52,8 @@ const txClient = async (wallet: OfflineSigner, { addr: addr }: TxClientOptions =
     msgRequestLoan: (data: MsgRequestLoan): EncodeObject => ({ typeUrl: "/username.loan.loan.MsgRequestLoan", value: MsgRequestLoan.fromPartial( data ) }),
     msgApproveLoan: (data: MsgApproveLoan): EncodeObject => ({ typeUrl: "/username.loan.loan.MsgApproveLoan", value: MsgApproveLoan.fromPartial( data ) }),
     msgRepayLoan: (data: MsgRepayLoan): EncodeObject => ({ typeUrl: "/username.loan.loan.MsgRepayLoan", value: MsgRepayLoan.fromPartial( data ) }),
+    msgCancelLoan: (data: MsgCancelLoan): EncodeObject => ({ typeUrl: "/username.loan.loan.MsgCancelLoan", value: MsgCancelLoan.fromPartial( data ) }),
+    msgLiquidateLoan: (data: MsgLiquidateLoan): EncodeObject => ({ typeUrl: "/username.loan.loan.MsgLiquidateLoan", value: MsgLiquidateLoan.fromPartial( data ) }),
     
   };
 };

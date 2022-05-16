@@ -48716,6 +48716,10 @@ definitions:
         type: string
   username.loan.loan.MsgApproveLoanResponse:
     type: object
+  username.loan.loan.MsgCancelLoanResponse:
+    type: object
+  username.loan.loan.MsgLiquidateLoanResponse:
+    type: object
   username.loan.loan.MsgRepayLoanResponse:
     type: object
   username.loan.loan.MsgRequestLoanResponse:
