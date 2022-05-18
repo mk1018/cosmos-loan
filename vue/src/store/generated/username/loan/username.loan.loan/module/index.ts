@@ -4,18 +4,20 @@ import { StdFee } from "@cosmjs/launchpad";
 import { SigningStargateClient } from "@cosmjs/stargate";
 import { Registry, OfflineSigner, EncodeObject, DirectSecp256k1HdWallet } from "@cosmjs/proto-signing";
 import { Api } from "./rest";
-import { MsgApproveLoan } from "./types/loan/tx";
+import { MsgLiquidateLoan } from "./types/loan/tx";
 import { MsgRequestLoan } from "./types/loan/tx";
 import { MsgCancelLoan } from "./types/loan/tx";
-import { MsgLiquidateLoan } from "./types/loan/tx";
+import { MsgTestLoan } from "./types/loan/tx";
+import { MsgApproveLoan } from "./types/loan/tx";
 import { MsgRepayLoan } from "./types/loan/tx";
 
 
 const types = [
-  ["/username.loan.loan.MsgApproveLoan", MsgApproveLoan],
+  ["/username.loan.loan.MsgLiquidateLoan", MsgLiquidateLoan],
   ["/username.loan.loan.MsgRequestLoan", MsgRequestLoan],
   ["/username.loan.loan.MsgCancelLoan", MsgCancelLoan],
-  ["/username.loan.loan.MsgLiquidateLoan", MsgLiquidateLoan],
+  ["/username.loan.loan.MsgTestLoan", MsgTestLoan],
+  ["/username.loan.loan.MsgApproveLoan", MsgApproveLoan],
   ["/username.loan.loan.MsgRepayLoan", MsgRepayLoan],
   
 ];
@@ -49,10 +51,11 @@ const txClient = async (wallet: OfflineSigner, { addr: addr }: TxClientOptions =
 
   return {
     signAndBroadcast: (msgs: EncodeObject[], { fee, memo }: SignAndBroadcastOptions = {fee: defaultFee, memo: ""}) => client.signAndBroadcast(address, msgs, fee,memo),
-    msgApproveLoan: (data: MsgApproveLoan): EncodeObject => ({ typeUrl: "/username.loan.loan.MsgApproveLoan", value: MsgApproveLoan.fromPartial( data ) }),
+    msgLiquidateLoan: (data: MsgLiquidateLoan): EncodeObject => ({ typeUrl: "/username.loan.loan.MsgLiquidateLoan", value: MsgLiquidateLoan.fromPartial( data ) }),
     msgRequestLoan: (data: MsgRequestLoan): EncodeObject => ({ typeUrl: "/username.loan.loan.MsgRequestLoan", value: MsgRequestLoan.fromPartial( data ) }),
     msgCancelLoan: (data: MsgCancelLoan): EncodeObject => ({ typeUrl: "/username.loan.loan.MsgCancelLoan", value: MsgCancelLoan.fromPartial( data ) }),
-    msgLiquidateLoan: (data: MsgLiquidateLoan): EncodeObject => ({ typeUrl: "/username.loan.loan.MsgLiquidateLoan", value: MsgLiquidateLoan.fromPartial( data ) }),
+    msgTestLoan: (data: MsgTestLoan): EncodeObject => ({ typeUrl: "/username.loan.loan.MsgTestLoan", value: MsgTestLoan.fromPartial( data ) }),
+    msgApproveLoan: (data: MsgApproveLoan): EncodeObject => ({ typeUrl: "/username.loan.loan.MsgApproveLoan", value: MsgApproveLoan.fromPartial( data ) }),
     msgRepayLoan: (data: MsgRepayLoan): EncodeObject => ({ typeUrl: "/username.loan.loan.MsgRepayLoan", value: MsgRepayLoan.fromPartial( data ) }),
     
   };

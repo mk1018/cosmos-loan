@@ -31,6 +31,8 @@ export type LoanMsgRepayLoanResponse = object;
 
 export type LoanMsgRequestLoanResponse = object;
 
+export type LoanMsgTestLoanResponse = object;
+
 /**
  * Params defines the parameters for the module.
  */
